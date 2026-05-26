@@ -1,20 +1,8 @@
 package ru.yandex.practicum.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class CommentResponse {
-
-    private Long id;
-
-    private String text;
-
-    private Long postId;
-
+public record CommentResponse(
+        Long id,
+        String text,
+        Long postId
+) {
 }
