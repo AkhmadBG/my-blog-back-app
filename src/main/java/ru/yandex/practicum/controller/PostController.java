@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.service.PostService;
 
@@ -63,8 +64,9 @@ public class PostController {
     }
 
     @PutMapping("/{postId}/image")
-    public ResponseEntity<Void> updateImage(@PathVariable Long postId,) {
-        postService.updateImage(postId, );
+    public ResponseEntity<Void> uploadImage(@PathVariable Long postId,
+                                            @RequestParam MultipartFile file) {
+        postService.uploadImage(postId, file);
         return ResponseEntity.ok().build();
     }
 
