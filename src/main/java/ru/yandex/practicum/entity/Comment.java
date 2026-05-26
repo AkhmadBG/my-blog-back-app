@@ -11,7 +11,6 @@ import lombok.*;
 @AllArgsConstructor
 public class Comment {
 
-    @NotNull
     private Long id;
 
     @NotBlank

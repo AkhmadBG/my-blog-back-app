@@ -6,14 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.service.PostService;
-
-import java.util.List;
 
 @Validated
 @RestController
@@ -65,50 +64,17 @@ public class PostController {
 
     @PutMapping("/{postId}/image")
     public ResponseEntity<Void> uploadImage(@PathVariable Long postId,
-                                            @RequestParam MultipartFile file) {
-        postService.uploadImage(postId, file);
+                                            @RequestParam("image") MultipartFile image) {
+        postService.uploadImage(postId, image);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{postId}/image")
     public ResponseEntity<byte[]> getImage(@PathVariable Long postId) {
         byte[] image = postService.getImage(postId);
-        return ResponseEntity.ok(image);
-    }
-
-    @GetMapping("/{postId}/comments")
-    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
-        List<CommentResponse> comments = postService.getComments(postId);
-        return ResponseEntity.ok(comments);
-    }
-
-    @GetMapping("/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentResponse> getComment(@PathVariable Long postId,
-                                                      @PathVariable Long commentId) {
-        CommentResponse comment = postService.getComment(postId, commentId);
-        return ResponseEntity.ok(comment);
-    }
-
-    @PostMapping("/{postId}/comments")
-    public ResponseEntity<CommentResponse> addComment(@PathVariable Long postId,
-                                                      @Valid @RequestBody NewCommentRequest newCommentRequest) {
-        CommentResponse comment = postService.addComment(postId, newCommentRequest);
-        return ResponseEntity.ok(comment);
-    }
-
-    @PutMapping("/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long postId,
-                                                         @PathVariable Long commentId,
-                                                         @Valid @RequestBody UpdateCommentRequest updateCommentRequest) {
-        CommentResponse comment = postService.updateComment(postId, commentId, updateCommentRequest);
-        return ResponseEntity.ok(comment);
-    }
-
-    @DeleteMapping("/{postId}/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long postId,
-                                              @PathVariable Long commentId) {
-        postService.deleteComment(postId, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(image);
     }
 
 }

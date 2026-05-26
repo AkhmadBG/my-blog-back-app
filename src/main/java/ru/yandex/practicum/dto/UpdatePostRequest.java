@@ -25,6 +25,7 @@ public class UpdatePostRequest {
     @NotBlank
     private String text;
 
+    @NotNull
     private Set<String> tags = new HashSet<>();
 
 }

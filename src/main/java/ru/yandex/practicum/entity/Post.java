@@ -14,7 +14,6 @@ import java.util.Set;
 @AllArgsConstructor
 public class Post {
 
-    @NotNull
     private Long id;
 
     @NotBlank
@@ -23,7 +22,10 @@ public class Post {
     @NotBlank
     private String text;
 
+    @NotNull
     private Set<String> tags = new HashSet<>();
+
+    private String imagePath;
 
     private long likesCount = 0;
 

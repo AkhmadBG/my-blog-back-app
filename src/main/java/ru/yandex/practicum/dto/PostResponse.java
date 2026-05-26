@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -20,7 +20,7 @@ public class PostResponse {
 
     private String text;
 
-    private List<String> tags = new ArrayList<>();
+    private Set<String> tags = new HashSet<>();
 
     private long likesCount;
 
