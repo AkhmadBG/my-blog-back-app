@@ -1,6 +1,5 @@
 package ru.yandex.practicum.service.impl;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,11 +12,17 @@ import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.repository.PostRepository;
 import ru.yandex.practicum.service.PostService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Service
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PostMapper postMapper;
+    public static final String UPLOAD_DIR = "uploads/";
 
     @Autowired
     public PostServiceImpl(PostRepository postRepository, PostMapper postMapper) {
@@ -27,7 +32,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostResponse> getPosts(String search, Pageable pageable) {
-        return null;
+        return postRepository.getPosts(search, pageable);
     }
 
     @Override
@@ -65,12 +70,28 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public byte[] getImage(Long postId) {
-        return new byte[0];
+        try {
+            String fileName = postId.toString();
+            Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName).normalize();
+            byte[] content = Files.readAllBytes(filePath);
+            return content;
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void uploadImage(Long postId, MultipartFile image) {
-
+        try {
+            Path uploadDir = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+            Path filePath = uploadDir.resolve(image.getOriginalFilename());
+            image.transferTo(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }
