@@ -37,8 +37,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse getPost(Long postId) {
-        Post post = postRepository.findPostById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Пост с id " + postId + " не найден"));
+        Post post = postRepository.findPostById(postId);
         return postMapper.mapToPostResponse(post);
     }
 
@@ -61,8 +60,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Long addLike(Long postId) {
-        Post post = postRepository.findPostById(postId)
-                .orElseThrow(() -> new PostNotFoundException("Пост с id " + postId + " не найден"));
+        Post post = postRepository.findPostById(postId);
         post.setLikesCount(post.getLikesCount() + 1);
         postRepository.save(post);
         return post.getLikesCount();

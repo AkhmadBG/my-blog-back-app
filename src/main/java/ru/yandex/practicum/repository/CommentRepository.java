@@ -11,7 +11,7 @@ public interface CommentRepository {
 
     List<Comment> findAllByPostId(Long postId);
 
-    Optional<Comment> findByPostIdAndCommentId(Long postId, Long commentId);
+    Comment findByPostIdAndCommentId(Long postId, Long commentId);
 
     Comment addComment(Long postId, NewCommentRequest newCommentRequest);
 

@@ -7,13 +7,11 @@ import ru.yandex.practicum.dto.PostResponse;
 import ru.yandex.practicum.dto.UpdatePostRequest;
 import ru.yandex.practicum.entity.Post;
 
-import java.util.Optional;
-
 public interface PostRepository {
 
     Page<PostResponse> getPosts(String search, Pageable pageable);
 
-    Optional<Post> findPostById(Long postId);
+    Post findPostById(Long postId);
 
     Post addPost(NewPostRequest newPostRequest);
 

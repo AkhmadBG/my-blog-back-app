@@ -36,8 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponse getComment(Long postId, Long commentId) {
-        Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Коммент с id " + commentId + " не найден"));
+        Comment comment = commentRepository.findByPostIdAndCommentId(postId, commentId);
         return commentMapper.mapToCommentResponse(comment);
     }
 

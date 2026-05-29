@@ -1,6 +1,7 @@
 package ru.yandex.practicum.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,48 +10,139 @@ import ru.yandex.practicum.dto.NewPostRequest;
 import ru.yandex.practicum.dto.PostResponse;
 import ru.yandex.practicum.dto.UpdatePostRequest;
 import ru.yandex.practicum.entity.Post;
+import ru.yandex.practicum.exception.PostNotFoundException;
+import ru.yandex.practicum.mapper.PostRowMapper;
+import ru.yandex.practicum.mapper.TagRowMapper;
 import ru.yandex.practicum.repository.PostRepository;
 
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final PostRowMapper postRowMapper;
+    private final TagRowMapper tagRowMapper;
 
     @Autowired
-    public PostRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    public PostRepositoryImpl(JdbcTemplate jdbcTemplate, PostRowMapper postRowMapper, TagRowMapper tagRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.postRowMapper = postRowMapper;
+        this.tagRowMapper = tagRowMapper;
     }
 
     @Override
     public Page<PostResponse> getPosts(String search, Pageable pageable) {
+
         return null;
     }
 
     @Override
-    public Optional<Post> findPostById(Long postId) {
-        return Optional.empty();
+    public Post findPostById(Long postId) {
+        String findPostQuery = """
+                SELECT id, 
+                title, 
+                text, 
+                image_path, 
+                likes_count, 
+                comments_count 
+                FROM posts AS p 
+                WHERE p.id = ?
+                """;
+        String findTagQuery = """
+                SELECT tag 
+                FROM post_tags AS pt 
+                WHERE pt.id = ?
+                """;
+        try {
+            Post post = jdbcTemplate.queryForObject(findPostQuery, postRowMapper, postId);
+            Set<String> tags = new HashSet<>(jdbcTemplate.query(findTagQuery, tagRowMapper, postId));
+            post.setTags(tags);
+            return post;
+        } catch (EmptyResultDataAccessException e) {
+            throw new PostNotFoundException("Пост с id " + postId + " не найден");
+        }
     }
 
     @Override
     public Post addPost(NewPostRequest newPostRequest) {
-        return null;
+        String addPostQuery = """
+                INSERT INTO posts (title, text, image_path, likes_count, comments_count) 
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+        try {
+            long newPostId = jdbcTemplate.update(addPostQuery,
+                    newPostRequest.getTitle(),
+                    newPostRequest.getText(),
+                    newPostRequest.getImagePath(),
+                    0,
+                    0);
+            return findPostById(newPostId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new PostNotFoundException("Пост не найден");
+        }
     }
 
     @Override
     public Post updatePost(Long postId, UpdatePostRequest updatePostRequest) {
-        return null;
+        String updatePostQuery = """
+                UPDATE posts 
+                SET title = ?, 
+                text = ?, 
+                image_path = ?, 
+                likes_count = ?, 
+                comments_count = ? 
+                WHERE id = ?
+                """;
+        try {
+            jdbcTemplate.update(updatePostQuery,
+                    updatePostQuery.getTitle(),
+                    updatePostQuery.getText(),
+                    updatePostQuery.getImagePath(),
+                    updatePostQuery.getLikesCount(),
+                    updatePostQuery.getCommentsCount(),
+                    updatePostQuery.getId());
+        } catch (EmptyResultDataAccessException e) {
+            throw new PostNotFoundException("Пост с id " + postId + " не найден");
+        }
+        return findPostById(postId);
     }
 
     @Override
     public void deletePost(Long postId) {
-
+        String deletePostQuery = """
+                DELETE FROM posts WHERE id = ?
+                """;
+        try {
+            jdbcTemplate.update(deletePostQuery, postId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new PostNotFoundException("Пост с id " + postId + " не найден");
+        }
     }
 
     @Override
     public void save(Post post) {
-
+        String savePostQuery = """
+                UPDATE posts 
+                SET title = ?, 
+                text = ?, 
+                image_path = ?, 
+                likes_count = ?, 
+                comments_count = ? 
+                WHERE id = ?
+                """;
+        try {
+            jdbcTemplate.update(savePostQuery,
+                    post.getTitle(),
+                    post.getText(),
+                    post.getImagePath(),
+                    post.getLikesCount(),
+                    post.getCommentsCount(),
+                    post.getId());
+        } catch (EmptyResultDataAccessException e) {
+            throw new PostNotFoundException("Пост с id " + post.getId() + " не найден");
+        }
     }
 
 }
