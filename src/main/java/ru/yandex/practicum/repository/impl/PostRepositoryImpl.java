@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.dto.NewPostRequest;
 import ru.yandex.practicum.dto.PostResponse;
@@ -68,16 +69,31 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Post addPost(NewPostRequest newPostRequest) {
         String addPostQuery = """
-                INSERT INTO posts (title, text, image_path, likes_count, comments_count) 
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO posts (title, text, likes_count, comments_count) 
+                VALUES (?, ?, ?, ?)
                 """;
+        String addPostsTagsQuery = """
+                INSERT INTO post_tags (post_id, tag) 
+                VALUES (?, ?)
+                """;
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            long newPostId = jdbcTemplate.update(addPostQuery,
-                    newPostRequest.getTitle(),
-                    newPostRequest.getText(),
-                    newPostRequest.getImagePath(),
+            int update = jdbcTemplate.update(addPostQuery,
+                    newPostRequest.title(),
+                    newPostRequest.text(),
                     0,
-                    0);
+                    0,
+                    keyHolder);
+            if (update == 0) {
+                throw new PostNotFoundException("Пост не найден");
+            }
+            Long newPostId = keyHolder.getKeyAs(Integer.class);
+            if (newPostId == null) {
+                throw new RuntimeException("не удалось сохранить пост");
+            }
+            newPostRequest.tags().forEach(
+                    (tag) -> jdbcTemplate.update(addPostsTagsQuery, newPostId, tag)
+            );
             return findPostById(newPostId);
         } catch (EmptyResultDataAccessException e) {
             throw new PostNotFoundException("Пост не найден");
@@ -95,18 +111,25 @@ public class PostRepositoryImpl implements PostRepository {
                 comments_count = ? 
                 WHERE id = ?
                 """;
+        String updatePostsTagsQuery = """
+                INSERT INTO post_tags (post_id, tag) 
+                VALUES (?, ?)
+                """;
         try {
-            jdbcTemplate.update(updatePostQuery,
-                    updatePostQuery.getTitle(),
-                    updatePostQuery.getText(),
-                    updatePostQuery.getImagePath(),
-                    updatePostQuery.getLikesCount(),
-                    updatePostQuery.getCommentsCount(),
-                    updatePostQuery.getId());
+            int update = jdbcTemplate.update(updatePostQuery,
+                    updatePostRequest.title(),
+                    updatePostRequest.text(),
+                    updatePostRequest.id());
+            if (update == 0) {
+                throw new PostNotFoundException("Пост не найден");
+            }
+            updatePostRequest.tags().forEach(
+                    (tag) -> jdbcTemplate.update(updatePostsTagsQuery, postId, tag)
+            );
+            return findPostById(postId);
         } catch (EmptyResultDataAccessException e) {
-            throw new PostNotFoundException("Пост с id " + postId + " не найден");
+            throw new PostNotFoundException("Пост не найден");
         }
-        return findPostById(postId);
     }
 
     @Override

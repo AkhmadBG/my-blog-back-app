@@ -60,12 +60,14 @@ public class CommentRepositoryImpl implements CommentRepository {
                 VALUES (?, ?)
                 """;
         try {
-            long newCommentId = jdbcTemplate.update(addCommentQuery, newCommentRequest.getText(), newCommentRequest.getPostId());
+            int update = jdbcTemplate.update(addCommentQuery, newCommentRequest.text(), newCommentRequest.postId());
+            if (update == 0) {
+                throw new CommentNotFoundException("Комментарий не найден");
+            }
             return findByPostIdAndCommentId(postId, newCommentId);
         } catch (EmptyResultDataAccessException e) {
             throw new CommentNotFoundException("Комментарий не найден");
         }
-        return null;
     }
 
     @Override
@@ -77,7 +79,10 @@ public class CommentRepositoryImpl implements CommentRepository {
                 AND id = ?
                 """;
         try {
-            jdbcTemplate.update(updateCommentQuery,updateCommentRequest.getText(), postId, commentId);
+            int update = jdbcTemplate.update(updateCommentQuery, updateCommentRequest.text(), postId, commentId);
+            if (update == 0) {
+                throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден");
+            }
             return findByPostIdAndCommentId(postId, commentId);
         } catch (EmptyResultDataAccessException e) {
             throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден");
@@ -89,10 +94,13 @@ public class CommentRepositoryImpl implements CommentRepository {
         String deleteCommentQuery = """
                 DELETE FROM comments 
                 WHERE postId = ? 
-                AND commentId = ?
+                AND id = ?
                 """;
         try {
-            jdbcTemplate.update(deleteCommentQuery, postId, commentId);
+            int delete = jdbcTemplate.update(deleteCommentQuery, postId, commentId);
+            if (delete == 0) {
+                throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден");
+            }
         } catch (EmptyResultDataAccessException e) {
             throw new CommentNotFoundException("Комментарий с id " + commentId + " не найден");
         }
