@@ -134,10 +134,7 @@ public class PostRepositoryImpl implements PostRepository {
         String updatePostQuery = """
                 UPDATE posts 
                 SET title = ?, 
-                text = ?, 
-                image_path = ?, 
-                likes_count = ?, 
-                comments_count = ? 
+                text = ?
                 WHERE id = ?
                 """;
         String updatePostsTagsQuery = """
