@@ -35,11 +35,10 @@ public class PostController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<PostResponse>> getPosts(@RequestParam("search") String search,
+    public ResponseEntity<CustomPage<PostResponse>> getPosts(@RequestParam("search") String search,
                                                        @RequestParam("pageNumber") int pageNumber,
                                                        @RequestParam("pageSize") int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").ascending());
-        Page<PostResponse> posts = postService.getPosts(search, pageable);
+        CustomPage<PostResponse> posts = postService.getPosts(search, pageNumber, pageSize);
         return ResponseEntity.ok(posts);
     }
 

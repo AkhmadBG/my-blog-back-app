@@ -3,15 +3,16 @@ package ru.yandex.practicum.repository.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.dto.NewCommentRequest;
 import ru.yandex.practicum.dto.UpdateCommentRequest;
 import ru.yandex.practicum.entity.Comment;
 import ru.yandex.practicum.exception.CommentNotFoundException;
-import ru.yandex.practicum.exception.PostNotFoundException;
 import ru.yandex.practicum.mapper.CommentRowMapper;
 import ru.yandex.practicum.repository.CommentRepository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -32,11 +33,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 SELECT * FROM comments
                 WHERE post_id = ?
                 """;
-        try {
             return jdbcTemplate.query(findAllCommentsByIdQuery, commentRowMapper, postId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new PostNotFoundException("Пост с id " + postId + " не найден");
-        }
     }
 
     @Override
@@ -59,15 +56,26 @@ public class CommentRepositoryImpl implements CommentRepository {
                 INSERT INTO comments (text, post_id) 
                 VALUES (?, ?)
                 """;
-        try {
-            int update = jdbcTemplate.update(addCommentQuery, newCommentRequest.text(), newCommentRequest.postId());
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            int update = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(addCommentQuery, new String[]{"id"});
+                ps.setString(1,newCommentRequest.text());
+                ps.setLong(2, newCommentRequest.postId());
+                return ps;
+                },
+                keyHolder);
+
             if (update == 0) {
                 throw new CommentNotFoundException("Комментарий не найден");
             }
+
+            Long newCommentId = keyHolder.getKeyAs(Long.class);
+
+            if (newCommentId == null) {
+                throw new RuntimeException("не удалось сохранить комментарий");
+            }
+
             return findByPostIdAndCommentId(postId, newCommentId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new CommentNotFoundException("Комментарий не найден");
-        }
     }
 
     @Override
@@ -93,7 +101,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     public void deleteComment(Long postId, Long commentId) {
         String deleteCommentQuery = """
                 DELETE FROM comments 
-                WHERE postId = ? 
+                WHERE post_id = ? 
                 AND id = ?
                 """;
         try {

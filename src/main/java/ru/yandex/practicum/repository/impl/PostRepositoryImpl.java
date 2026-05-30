@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.dto.CustomPage;
 import ru.yandex.practicum.dto.NewPostRequest;
 import ru.yandex.practicum.dto.PostResponse;
 import ru.yandex.practicum.dto.UpdatePostRequest;
@@ -16,6 +17,7 @@ import ru.yandex.practicum.mapper.PostRowMapper;
 import ru.yandex.practicum.mapper.TagRowMapper;
 import ru.yandex.practicum.repository.PostRepository;
 
+import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,7 +36,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<PostResponse> getPosts(String search, Pageable pageable) {
+    public CustomPage<PostResponse> getPosts(String search, int pageNumber, int pageSize) {
 
         return null;
     }
@@ -78,16 +80,21 @@ public class PostRepositoryImpl implements PostRepository {
                 """;
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            int update = jdbcTemplate.update(addPostQuery,
-                    newPostRequest.title(),
-                    newPostRequest.text(),
-                    0,
-                    0,
-                    keyHolder);
+            int update = jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                        addPostQuery,
+                        new String[]{"id"}
+                );
+                ps.setString(1, newPostRequest.title());
+                ps.setString(2, newPostRequest.text());
+                ps.setLong(3, 0);
+                ps.setLong(4, 0);
+                return ps;
+            }, keyHolder);
             if (update == 0) {
                 throw new PostNotFoundException("Пост не найден");
             }
-            Long newPostId = keyHolder.getKeyAs(Integer.class);
+            Long newPostId = keyHolder.getKeyAs(Long.class);
             if (newPostId == null) {
                 throw new RuntimeException("не удалось сохранить пост");
             }

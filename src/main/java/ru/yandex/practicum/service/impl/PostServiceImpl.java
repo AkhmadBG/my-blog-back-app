@@ -31,8 +31,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<PostResponse> getPosts(String search, Pageable pageable) {
-        return postRepository.getPosts(search, pageable);
+    public CustomPage<PostResponse> getPosts(String search, int pageNumber, int pageSize) {
+        return postRepository.getPosts(search, pageNumber, pageSize);
     }
 
     @Override

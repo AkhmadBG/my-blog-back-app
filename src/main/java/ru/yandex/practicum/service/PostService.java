@@ -7,7 +7,7 @@ import ru.yandex.practicum.dto.*;
 
 public interface PostService {
 
-    Page<PostResponse> getPosts(String search, Pageable pageable);
+    CustomPage<PostResponse> getPosts(String search, int pageNumber, int pageSize);
 
     PostResponse getPost(Long postId);
 
