@@ -1,14 +1,14 @@
 package ru.yandex.practicum.repository;
 
-import ru.yandex.practicum.dto.CustomPage;
 import ru.yandex.practicum.dto.NewPostRequest;
-import ru.yandex.practicum.dto.PostResponse;
 import ru.yandex.practicum.dto.UpdatePostRequest;
 import ru.yandex.practicum.entity.Post;
 
+import java.util.List;
+
 public interface PostRepository {
 
-    CustomPage<PostResponse> getPosts(String search, int pageNumber, int pageSize);
+    List<Post> getPosts(String search, int pageNumber, int pageSize);
 
     Post findPostById(Long postId);
 
@@ -19,5 +19,7 @@ public interface PostRepository {
     void deletePost(Long postId);
 
     void save(Post post);
+
+    long countPosts(String search);
 
 }

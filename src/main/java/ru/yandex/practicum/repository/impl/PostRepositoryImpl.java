@@ -2,14 +2,10 @@ package ru.yandex.practicum.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.dto.CustomPage;
 import ru.yandex.practicum.dto.NewPostRequest;
-import ru.yandex.practicum.dto.PostResponse;
 import ru.yandex.practicum.dto.UpdatePostRequest;
 import ru.yandex.practicum.entity.Post;
 import ru.yandex.practicum.exception.PostNotFoundException;
@@ -19,6 +15,7 @@ import ru.yandex.practicum.repository.PostRepository;
 
 import java.sql.PreparedStatement;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -36,9 +33,34 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public CustomPage<PostResponse> getPosts(String search, int pageNumber, int pageSize) {
+    public List<Post> getPosts(String search, int pageNumber, int pageSize) {
+        String getPostsQuery = """
+                SELECT * 
+                FROM posts 
+                WHERE LOWER(text) LIKE (?) 
+                ORDER BY id 
+                LIMIT ? 
+                OFFSET ?
+                """;
+        int offset = (pageNumber - 1) * pageSize;
+        return jdbcTemplate.query(getPostsQuery, postRowMapper, search, pageSize, offset);
+    }
 
-        return null;
+    @Override
+    public long countPosts(String search) {
+        if (search == null || search.isBlank()) {
+            return jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM posts", Long.class
+            );
+        }
+        String countPostsQuery = """
+                SELECT COUNT(*) 
+                FROM posts 
+                WHERE LOWER(title) LIKE LOWER(?) 
+                OR LOWER(text) LIKE LOWER(?)
+                """;
+        String pattern = "%" + search + "%";
+        return jdbcTemplate.queryForObject(countPostsQuery, Long.class, pattern, pattern);
     }
 
     @Override

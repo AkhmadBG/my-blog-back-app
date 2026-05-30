@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -32,7 +33,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public CustomPage<PostResponse> getPosts(String search, int pageNumber, int pageSize) {
-        return postRepository.getPosts(search, pageNumber, pageSize);
+        List<Post> posts = postRepository.getPosts(search, pageNumber, pageSize);
+        long totalCount = postRepository.countPosts(search);
+        int lastPage = (int) Math.ceil((double) totalCount / pageSize);
+        boolean hasPrev = pageNumber > 1;
+        boolean hasNext = pageNumber < lastPage;
+        posts.forEach(postResponse -> postResponse.setText(shortText(postResponse.getText())));
+        List<PostResponse> responses = posts.stream()
+                .map(postMapper::mapToPostResponse)
+                .toList();
+        return new CustomPage<>(responses, hasPrev, hasNext, lastPage);
     }
 
     @Override
@@ -90,6 +100,13 @@ public class PostServiceImpl implements PostService {
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    private String shortText(String text) {
+        if (text.length() <= 128) {
+            return text;
+        }
+        return text.substring(0, 128) + "...";
     }
 
 }
