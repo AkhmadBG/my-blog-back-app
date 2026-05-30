@@ -3,10 +3,6 @@ package ru.yandex.practicum.controller;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,16 +24,10 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("/home")
-    @ResponseBody
-    public String homePage() {
-        return "<h1>Hello, world!</h1>";
-    }
-
     @GetMapping()
     public ResponseEntity<CustomPage<PostResponse>> getPosts(@RequestParam("search") String search,
-                                                       @RequestParam("pageNumber") int pageNumber,
-                                                       @RequestParam("pageSize") int pageSize) {
+                                                             @RequestParam("pageNumber") int pageNumber,
+                                                             @RequestParam("pageSize") int pageSize) {
         CustomPage<PostResponse> posts = postService.getPosts(search, pageNumber, pageSize);
         return ResponseEntity.ok(posts);
     }

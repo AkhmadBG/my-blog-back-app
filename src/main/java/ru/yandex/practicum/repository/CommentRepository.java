@@ -5,7 +5,6 @@ import ru.yandex.practicum.dto.UpdateCommentRequest;
 import ru.yandex.practicum.entity.Comment;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CommentRepository {
 

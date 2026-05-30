@@ -78,7 +78,7 @@ public class PostRepositoryImpl implements PostRepository {
         String findTagQuery = """
                 SELECT tag 
                 FROM post_tags AS pt 
-                WHERE pt.id = ?
+                WHERE pt.post_id = ?
                 """;
         try {
             Post post = jdbcTemplate.queryForObject(findPostQuery, postRowMapper, postId);

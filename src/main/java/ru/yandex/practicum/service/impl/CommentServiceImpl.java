@@ -6,7 +6,6 @@ import ru.yandex.practicum.dto.CommentResponse;
 import ru.yandex.practicum.dto.NewCommentRequest;
 import ru.yandex.practicum.dto.UpdateCommentRequest;
 import ru.yandex.practicum.entity.Comment;
-import ru.yandex.practicum.exception.CommentNotFoundException;
 import ru.yandex.practicum.mapper.CommentMapper;
 import ru.yandex.practicum.repository.CommentRepository;
 import ru.yandex.practicum.service.CommentService;

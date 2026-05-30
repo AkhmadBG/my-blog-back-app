@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 @Component
 public class CommentRowMapper implements RowMapper<Comment> {
+
     @Override
     public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Comment.builder()
@@ -17,4 +18,5 @@ public class CommentRowMapper implements RowMapper<Comment> {
                 .postId(rs.getLong("post_id"))
                 .build();
     }
+
 }

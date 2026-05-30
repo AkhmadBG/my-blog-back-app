@@ -33,7 +33,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 SELECT * FROM comments
                 WHERE post_id = ?
                 """;
-            return jdbcTemplate.query(findAllCommentsByIdQuery, commentRowMapper, postId);
+        return jdbcTemplate.query(findAllCommentsByIdQuery, commentRowMapper, postId);
     }
 
     @Override
@@ -57,25 +57,25 @@ public class CommentRepositoryImpl implements CommentRepository {
                 VALUES (?, ?)
                 """;
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            int update = jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(addCommentQuery, new String[]{"id"});
-                ps.setString(1,newCommentRequest.text());
-                ps.setLong(2, newCommentRequest.postId());
-                return ps;
+        int update = jdbcTemplate.update(connection -> {
+                    PreparedStatement ps = connection.prepareStatement(addCommentQuery, new String[]{"id"});
+                    ps.setString(1, newCommentRequest.text());
+                    ps.setLong(2, newCommentRequest.postId());
+                    return ps;
                 },
                 keyHolder);
 
-            if (update == 0) {
-                throw new CommentNotFoundException("Комментарий не найден");
-            }
+        if (update == 0) {
+            throw new CommentNotFoundException("Комментарий не найден");
+        }
 
-            Long newCommentId = keyHolder.getKeyAs(Long.class);
+        Long newCommentId = keyHolder.getKeyAs(Long.class);
 
-            if (newCommentId == null) {
-                throw new RuntimeException("не удалось сохранить комментарий");
-            }
+        if (newCommentId == null) {
+            throw new RuntimeException("не удалось сохранить комментарий");
+        }
 
-            return findByPostIdAndCommentId(postId, newCommentId);
+        return findByPostIdAndCommentId(postId, newCommentId);
     }
 
     @Override
