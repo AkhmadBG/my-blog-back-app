@@ -43,13 +43,25 @@ public class PostRepositoryImpl implements PostRepository {
                        likes_count, 
                        comments_count
                 FROM posts 
-                WHERE LOWER(text) LIKE (?) 
+                WHERE text ILIKE (?) 
+                OR title ILIKE (?) 
                 ORDER BY id 
                 LIMIT ? 
                 OFFSET ?
                 """;
+        String findPostTagsQuery = """
+                SELECT tag 
+                FROM post_tags AS pt 
+                WHERE pt.post_id = ?
+                """;
         int offset = (pageNumber - 1) * pageSize;
-        return jdbcTemplate.query(getPostsQuery, postRowMapper, search, pageSize, offset);
+        String pattern = "%" + search + "%";
+        List<Post> posts = jdbcTemplate.query(getPostsQuery, postRowMapper, pattern, pattern, pageSize, offset);
+        for (Post post : posts) {
+            Set<String> tags = new HashSet<>(jdbcTemplate.query(findPostTagsQuery, tagRowMapper, post.getId()));
+            post.setTags(tags);
+        }
+        return posts;
     }
 
     @Override
@@ -102,22 +114,15 @@ public class PostRepositoryImpl implements PostRepository {
                 FROM posts AS p 
                 WHERE p.id = ?
                 """;
-        String findTagQuery = """
+        String findPostTagsQuery = """
                 SELECT tag 
                 FROM post_tags AS pt 
                 WHERE pt.post_id = ?
                 """;
-        String countPostCommentsQuery = """
-                SELECT COUNT(*) 
-                FROM comments AS c 
-                WHERE c.post_id = ?
-                """;
         try {
             Post post = jdbcTemplate.queryForObject(findPostQuery, postRowMapper, postId);
-            Set<String> tags = new HashSet<>(jdbcTemplate.query(findTagQuery, tagRowMapper, postId));
-            long countComments = jdbcTemplate.queryForObject(countPostCommentsQuery, Long.class, postId);
+            Set<String> tags = new HashSet<>(jdbcTemplate.query(findPostTagsQuery, tagRowMapper, postId));
             post.setTags(tags);
-            post.setCommentsCount(countComments);
             return post;
         } catch (EmptyResultDataAccessException e) {
             throw new PostNotFoundException("Пост с id " + postId + " не найден");
