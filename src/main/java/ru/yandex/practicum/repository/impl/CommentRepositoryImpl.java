@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dto.NewCommentRequest;
 import ru.yandex.practicum.dto.UpdateCommentRequest;
 import ru.yandex.practicum.entity.Comment;
@@ -51,6 +52,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
+    @Transactional
     public Comment addComment(Long postId, NewCommentRequest newCommentRequest) {
         String addCommentQuery = """
                 INSERT INTO comments (text, post_id) 
@@ -79,6 +81,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
+    @Transactional
     public Comment updateComment(Long postId, Long commentId, UpdateCommentRequest updateCommentRequest) {
         String updateCommentQuery = """
                 UPDATE comments 
@@ -98,6 +101,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long postId, Long commentId) {
         String deleteCommentQuery = """
                 DELETE FROM comments 

@@ -9,6 +9,7 @@ import ru.yandex.practicum.entity.Comment;
 import ru.yandex.practicum.mapper.CommentMapper;
 import ru.yandex.practicum.repository.CommentRepository;
 import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.service.PostService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,11 +18,13 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostService postService;
     private final CommentMapper commentMapper;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostService postService, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
+        this.postService = postService;
         this.commentMapper = commentMapper;
     }
 
@@ -42,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponse addComment(Long postId, NewCommentRequest newCommentRequest) {
         Comment comment = commentRepository.addComment(postId, newCommentRequest);
+        postService.incrementOrDecrementPostCommentsCount(postId, true);
         return commentMapper.mapToCommentResponse(comment);
     }
 
@@ -54,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long postId, Long commentId) {
         commentRepository.deleteComment(postId, commentId);
+        postService.incrementOrDecrementPostCommentsCount(postId, false);
     }
 
 }

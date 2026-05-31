@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dto.NewPostRequest;
 import ru.yandex.practicum.dto.UpdatePostRequest;
 import ru.yandex.practicum.entity.Post;
@@ -35,7 +36,12 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<Post> getPosts(String search, int pageNumber, int pageSize) {
         String getPostsQuery = """
-                SELECT * 
+                SELECT id, 
+                       title, 
+                       text, 
+                       image_path, 
+                       likes_count, 
+                       comments_count
                 FROM posts 
                 WHERE LOWER(text) LIKE (?) 
                 ORDER BY id 
@@ -47,6 +53,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    @Transactional
     public long countPosts(String search) {
         if (search == null || search.isBlank()) {
             return jdbcTemplate.queryForObject(
@@ -64,6 +71,26 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    @Transactional
+    public void incrementOrDecrementPostCommentsCount(Long postId, boolean isIncrement) {
+        String updateQuery = """
+                UPDATE posts 
+                SET comments_count = comments_count + ? 
+                WHERE id = ?
+                AND (comments_count + ?) >= 0
+                """;
+
+        int change = isIncrement ? 1 : -1;
+
+        int rowsAffected = jdbcTemplate.update(updateQuery, change, postId, change);
+
+        if (rowsAffected == 0) {
+            throw new PostNotFoundException("Пост с id " + postId + " не найден или операция приведёт к отрицательному количеству комментариев");
+        }
+    }
+
+    @Override
+    @Transactional
     public Post findPostById(Long postId) {
         String findPostQuery = """
                 SELECT id, 
@@ -80,10 +107,17 @@ public class PostRepositoryImpl implements PostRepository {
                 FROM post_tags AS pt 
                 WHERE pt.post_id = ?
                 """;
+        String countPostCommentsQuery = """
+                SELECT COUNT(*) 
+                FROM comments AS c 
+                WHERE c.post_id = ?
+                """;
         try {
             Post post = jdbcTemplate.queryForObject(findPostQuery, postRowMapper, postId);
             Set<String> tags = new HashSet<>(jdbcTemplate.query(findTagQuery, tagRowMapper, postId));
+            long countComments = jdbcTemplate.queryForObject(countPostCommentsQuery, Long.class, postId);
             post.setTags(tags);
+            post.setCommentsCount(countComments);
             return post;
         } catch (EmptyResultDataAccessException e) {
             throw new PostNotFoundException("Пост с id " + postId + " не найден");
@@ -91,6 +125,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    @Transactional
     public Post addPost(NewPostRequest newPostRequest) {
         String addPostQuery = """
                 INSERT INTO posts (title, text, likes_count, comments_count) 
@@ -130,6 +165,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    @Transactional
     public Post updatePost(Long postId, UpdatePostRequest updatePostRequest) {
         String updatePostQuery = """
                 UPDATE posts 

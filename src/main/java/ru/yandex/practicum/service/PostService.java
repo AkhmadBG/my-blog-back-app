@@ -21,4 +21,6 @@ public interface PostService {
 
     void uploadImage(Long postId, MultipartFile image);
 
+    void incrementOrDecrementPostCommentsCount(Long postId, boolean isIncrement);
+
 }

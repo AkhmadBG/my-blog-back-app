@@ -74,6 +74,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void incrementOrDecrementPostCommentsCount(Long postId, boolean isIncrement) {
+        postRepository.incrementOrDecrementPostCommentsCount(postId, isIncrement);
+    }
+
+    @Override
     public byte[] getImage(Long postId) {
         try {
             String fileName = postId.toString();

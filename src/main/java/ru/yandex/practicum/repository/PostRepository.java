@@ -22,4 +22,6 @@ public interface PostRepository {
 
     long countPosts(String search);
 
+    void incrementOrDecrementPostCommentsCount(Long postId, boolean isIncrement);
+
 }
