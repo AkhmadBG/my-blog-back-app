@@ -22,16 +22,13 @@ public class ApiError {
 
     private String message;
 
-    private List<String> errors;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 
-    public ApiError(HttpStatus status, String reason, String message, String stackTrace) {
+    public ApiError(HttpStatus status, String reason, String message) {
         this.status = status;
         this.reason = reason;
         this.message = message;
-        this.errors = List.of(stackTrace);
         this.timestamp = LocalDateTime.now();
     }
 

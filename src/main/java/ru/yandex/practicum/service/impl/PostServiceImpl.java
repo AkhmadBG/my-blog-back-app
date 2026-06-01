@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.entity.Post;
+import ru.yandex.practicum.exception.ImageNotFoundException;
 import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.repository.PostRepository;
 import ru.yandex.practicum.service.PostService;
@@ -35,9 +36,8 @@ public class PostServiceImpl implements PostService {
         int lastPage = (int) Math.ceil((double) totalCount / pageSize);
         boolean hasPrev = pageNumber > 1;
         boolean hasNext = pageNumber < lastPage;
-        posts.forEach(postResponse -> postResponse.setText(shortText(postResponse.getText())));
         List<PostResponse> responses = posts.stream()
-                .map(postMapper::mapToPostResponse)
+                .map(postMapper::mapToPostResponseForList)
                 .toList();
         return new CustomPage<>(responses, hasPrev, hasNext, lastPage);
     }
@@ -80,13 +80,15 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public byte[] getImage(Long postId) {
+        Post post = postRepository.findPostById(postId);
         try {
-            String fileName = postId.toString();
-            Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName).normalize();
-            byte[] content = Files.readAllBytes(filePath);
-            return content;
+            Path filePath = Paths.get(post.getImagePath());
+            if (!Files.exists(filePath)) {
+                throw new ImageNotFoundException("Изображение не найдено");
+            }
+            return Files.readAllBytes(filePath);
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new RuntimeException("Произошла ошибка при чтении изображения", e);
         }
     }
 
@@ -94,21 +96,22 @@ public class PostServiceImpl implements PostService {
     public void uploadImage(Long postId, MultipartFile image) {
         try {
             Path uploadDir = Paths.get(UPLOAD_DIR);
+
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
             }
-            Path filePath = uploadDir.resolve(image.getOriginalFilename());
-            image.transferTo(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
 
-    private String shortText(String text) {
-        if (text.length() <= 128) {
-            return text;
+            String originalFilename = image.getOriginalFilename();
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+            Path filePath = uploadDir.resolve(postId.toString() + extension);
+            image.transferTo(filePath);
+
+            Post post = postRepository.findPostById(postId);
+            post.setImagePath(filePath.toString());
+            postRepository.save(post);
+        } catch (IOException e) {
+            throw new RuntimeException("Произошла ошибка при загрузке изображения", e);
         }
-        return text.substring(0, 128) + "...";
     }
 
 }

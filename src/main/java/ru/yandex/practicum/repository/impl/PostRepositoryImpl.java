@@ -15,6 +15,7 @@ import ru.yandex.practicum.mapper.TagRowMapper;
 import ru.yandex.practicum.repository.PostRepository;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,28 +36,47 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getPosts(String search, int pageNumber, int pageSize) {
-        String getPostsQuery = """
-                SELECT id, 
-                       title, 
-                       text, 
-                       image_path, 
-                       likes_count, 
-                       comments_count
-                FROM posts 
-                WHERE text ILIKE (?) 
-                OR title ILIKE (?) 
-                ORDER BY id 
-                LIMIT ? 
-                OFFSET ?
-                """;
+        String getPostsQuery = "";
+        int offset = (pageNumber - 1) * pageSize;
+        String pattern = "%" + search + "%";
+        List<Post> posts;
+        if (search == null || search.isBlank()) {
+            getPostsQuery = """
+                    SELECT id, 
+                           title, 
+                           text, 
+                           image_path, 
+                           likes_count, 
+                           comments_count
+                    FROM posts
+                    ORDER BY id 
+                    LIMIT ? 
+                    OFFSET ?
+                    """;
+            posts = jdbcTemplate.query(getPostsQuery, postRowMapper, pageSize, offset);
+        } else {
+            getPostsQuery = """
+                    
+                    SELECT id, 
+                           title, 
+                           text, 
+                           image_path, 
+                           likes_count, 
+                           comments_count
+                    FROM posts 
+                    WHERE text ILIKE ? 
+                    OR title ILIKE ? 
+                    ORDER BY id 
+                    LIMIT ? 
+                    OFFSET ?
+                    """;
+            posts = jdbcTemplate.query(getPostsQuery, postRowMapper, pattern, pattern, pageSize, offset);
+        }
         String findPostTagsQuery = """
                 SELECT tag 
                 FROM post_tags AS pt 
                 WHERE pt.post_id = ?
                 """;
-        int offset = (pageNumber - 1) * pageSize;
-        String pattern = "%" + search + "%";
-        List<Post> posts = jdbcTemplate.query(getPostsQuery, postRowMapper, pattern, pattern, pageSize, offset);
         for (Post post : posts) {
             Set<String> tags = new HashSet<>(jdbcTemplate.query(findPostTagsQuery, tagRowMapper, post.getId()));
             post.setTags(tags);
@@ -75,8 +95,8 @@ public class PostRepositoryImpl implements PostRepository {
         String countPostsQuery = """
                 SELECT COUNT(*) 
                 FROM posts 
-                WHERE LOWER(title) LIKE LOWER(?) 
-                OR LOWER(text) LIKE LOWER(?)
+                WHERE title ILIKE ? 
+                OR text ILIKE ?
                 """;
         String pattern = "%" + search + "%";
         return jdbcTemplate.queryForObject(countPostsQuery, Long.class, pattern, pattern);
