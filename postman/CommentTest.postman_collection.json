@@ -1,0 +1,150 @@
+{
+  "info": {
+    "_postman_id": "327ca32e-ae34-428f-aade-980b4e829b8e",
+    "name": "CommentTest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38451267"
+  },
+  "item": [
+    {
+      "name": "GetComments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "1",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetComment",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "1",
+            "comments",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddComment",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"text\": \"very good\",\r\n    \"postId\": 4\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/4/comments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "4",
+            "comments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateComment",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"text\": \"very very good\",\r\n    \"postId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments/2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "1",
+            "comments",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"text\": \"very good\",\r\n    \"postId\": 1\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "1",
+            "comments",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

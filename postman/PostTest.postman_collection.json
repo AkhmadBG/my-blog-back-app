@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "f6ca70d3-9076-402a-a346-c911e257a4c2",
+    "name": "PostTest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38451267"
+  },
+  "item": [
+    {
+      "name": "AddPost",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"new test post\",\r\n    \"text\": \"new test post about my hobby\",\r\n    \"tags\": [\r\n        \"hobby\",\r\n        \"test\",\r\n        \"new\"\r\n    ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetPost",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetPosts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts?search=test&pageNumber=1&pageSize=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts"
+          ],
+          "query": [
+            {
+              "key": "search",
+              "value": "test"
+            },
+            {
+              "key": "pageNumber",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeletePost",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"sdcsdc\",\r\n    \"text\": \"sdcsdcsdcsdc\",\r\n    \"tags\": [\r\n        \"дорога\",\r\n        \"отпуск\",\r\n        \"море\"\r\n    ]\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdatePost",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 4,\r\n    \"title\": \"hobby\",\r\n    \"text\": \"update my test post about my hobby\",\r\n    \"tags\": [\r\n        \"update\",\r\n        \"my\",\r\n        \"post\"\r\n    ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddLike",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"title\": \"Отпуск2\",\r\n    \"text\": \"Отпуск на море2\",\r\n    \"tags\": [\r\n        \"дорога2\",\r\n        \"море2\",\r\n        \"отпуск2\"\r\n    ]\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/4/likes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "4",
+            "likes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UploadImage",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"title\": \"Отпуск2\",\r\n    \"text\": \"Отпуск на море2\",\r\n    \"tags\": [\r\n        \"дорога2\",\r\n        \"море2\",\r\n        \"отпуск2\"\r\n    ]\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/image",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "1",
+            "image"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/image",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "my-blog-back-app-1.0-SNAPSHOT",
+            "api",
+            "posts",
+            "1",
+            "image"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
