@@ -1,12 +1,13 @@
 package ru.yandex.practicum;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class MyBlogBackApp {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.scan("ru.yandex.practicum");
+        SpringApplication.run(MyBlogBackApp.class, args);
     }
 
 }
