@@ -1,4 +1,4 @@
-package ru.yandex.practicum.config;
+package ru.yandex.practicum.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,15 +16,18 @@ import javax.sql.DataSource;
 public class DataSourceConfiguration {
 
     @Bean
-    public DataSource dataSource(@Value("${spring.datasource.url}") String url,
-                                 @Value("${spring.datasource.username}") String username,
-                                 @Value("${spring.datasource.password}") String password,
-                                 @Value("${spring.datasource.driver-class-name}") String dataClassName) {
+    public DataSource dataSource(
+            @Value("${spring.datasource.url}") String url,
+            @Value("${spring.datasource.username}") String username,
+            @Value("${spring.datasource.password}") String password,
+            @Value("${spring.datasource.driver-class-name}") String dataClassName
+    ) {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(dataClassName);
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
+
         return dataSource;
     }
 
@@ -36,9 +39,9 @@ public class DataSourceConfiguration {
     @EventListener
     public void populate(ContextRefreshedEvent event) {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
+
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("schema.sql"));
         populator.execute(dataSource);
     }
-
 }
