@@ -1,24 +1,26 @@
 package ru.yandex.practicum.service.impl;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import ru.yandex.practicum.configuration.ServiceTestConfiguration;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.repository.PostRepository;
-import ru.yandex.practicum.service.PostService;
 
-@SpringBootTest
-@Import(ServiceTestConfiguration.class)
+@ExtendWith(MockitoExtension.class)
 class PostServiceImplTest {
 
-    @Autowired
-    private PostService postService;
-
-    @Qualifier("mockPostRepository")
-    @Autowired
+    @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private PostMapper postMapper;
+
+    @InjectMocks
+    private PostServiceImpl postService;
+
+
 
     @Test
     void getPosts() {
@@ -55,4 +57,5 @@ class PostServiceImplTest {
     @Test
     void uploadImage() {
     }
+
 }

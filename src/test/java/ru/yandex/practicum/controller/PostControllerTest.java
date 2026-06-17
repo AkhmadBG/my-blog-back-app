@@ -2,16 +2,12 @@ package ru.yandex.practicum.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.service.PostService;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(PostController.class)
 class PostControllerTest {
 
     @Autowired
@@ -19,6 +15,8 @@ class PostControllerTest {
 
     @MockitoBean
     private PostService postService;
+
+
 
     @Test
     void getPosts() {

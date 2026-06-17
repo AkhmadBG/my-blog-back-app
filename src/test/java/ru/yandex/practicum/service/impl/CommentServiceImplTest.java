@@ -1,24 +1,26 @@
 package ru.yandex.practicum.service.impl;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import ru.yandex.practicum.configuration.ServiceTestConfiguration;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.yandex.practicum.mapper.CommentMapper;
 import ru.yandex.practicum.repository.CommentRepository;
-import ru.yandex.practicum.service.CommentService;
 
-@SpringBootTest
-@Import(ServiceTestConfiguration.class)
+@ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest {
 
-    @Autowired
-    private CommentService commentService;
-
-    @Qualifier("mockCommentRepository")
-    @Autowired
+    @Mock
     private CommentRepository commentRepository;
+
+    @Mock
+    private CommentMapper commentMapper;
+
+    @InjectMocks
+    private CommentServiceImpl commentService;
+
+
 
     @Test
     void getComments() {
