@@ -3,10 +3,8 @@ package ru.yandex.practicum.repository.impl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.configuration.DataSourceConfiguration;
 import ru.yandex.practicum.dto.NewPostRequest;
 import ru.yandex.practicum.dto.UpdatePostRequest;
 import ru.yandex.practicum.entity.Post;
@@ -31,26 +29,26 @@ class PostRepositoryImplTest {
     @Test
     void getPosts_shouldReturnPostsWithTags() {
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """, "title1", "text1");
+                INSERT INTO posts(title, text)
+                VALUES (?, ?)
+                """, "title1", "text1");
 
         Long postId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM posts", Long.class);
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """, "title2", "text2");
+                INSERT INTO posts(title, text)
+                VALUES (?, ?)
+                """, "title2", "text2");
 
         jdbcTemplate.update("""
-            INSERT INTO post_tags(post_id, tag)
-            VALUES (?, ?)
-            """, postId, "tag1");
+                INSERT INTO post_tags(post_id, tag)
+                VALUES (?, ?)
+                """, postId, "tag1");
 
         jdbcTemplate.update("""
-            INSERT INTO post_tags(post_id, tag)
-            VALUES (?, ?)
-            """, postId, "tag2");
+                INSERT INTO post_tags(post_id, tag)
+                VALUES (?, ?)
+                """, postId, "tag2");
 
         List<Post> posts = postRepository.getPosts("", 1, 10);
 
@@ -65,14 +63,14 @@ class PostRepositoryImplTest {
     @Test
     void countPosts_shouldReturnCount() {
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """, "title1", "text1");
+                INSERT INTO posts(title, text)
+                VALUES (?, ?)
+                """, "title1", "text1");
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """, "title2", "text2");
+                INSERT INTO posts(title, text)
+                VALUES (?, ?)
+                """, "title2", "text2");
 
         long count = postRepository.countPosts("");
 
@@ -82,14 +80,14 @@ class PostRepositoryImplTest {
     @Test
     void countPosts_shouldReturnCountBySearch() {
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """, "title1", "text1");
+                INSERT INTO posts(title, text)
+                VALUES (?, ?)
+                """, "title1", "text1");
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """, "title2", "text2");
+                INSERT INTO posts(title, text)
+                VALUES (?, ?)
+                """, "title2", "text2");
 
         long count = postRepository.countPosts("title1");
 
@@ -100,9 +98,9 @@ class PostRepositoryImplTest {
     void incrementOrDecrementPostCommentsCount_shouldIncrement() {
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text, comments_count)
-            VALUES (?, ?, ?)
-            """,
+                        INSERT INTO posts(title, text, comments_count)
+                        VALUES (?, ?, ?)
+                        """,
                 "title",
                 "text",
                 0
@@ -114,10 +112,10 @@ class PostRepositoryImplTest {
 
         Long commentsCount = jdbcTemplate.queryForObject(
                 """
-                SELECT comments_count
-                FROM posts
-                WHERE id = ?
-                """,
+                        SELECT comments_count
+                        FROM posts
+                        WHERE id = ?
+                        """,
                 Long.class,
                 postId
         );
@@ -129,9 +127,9 @@ class PostRepositoryImplTest {
     void incrementOrDecrementPostCommentsCount_shouldDecrement() {
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text, comments_count)
-            VALUES (?, ?, ?)
-            """,
+                        INSERT INTO posts(title, text, comments_count)
+                        VALUES (?, ?, ?)
+                        """,
                 "title",
                 "text",
                 2
@@ -143,10 +141,10 @@ class PostRepositoryImplTest {
 
         Long commentsCount = jdbcTemplate.queryForObject(
                 """
-                SELECT comments_count
-                FROM posts
-                WHERE id = ?
-                """,
+                        SELECT comments_count
+                        FROM posts
+                        WHERE id = ?
+                        """,
                 Long.class,
                 postId
         );
@@ -158,9 +156,9 @@ class PostRepositoryImplTest {
     void findPostById_shouldReturnPost() {
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """,
+                        INSERT INTO posts(title, text)
+                        VALUES (?, ?)
+                        """,
                 "title",
                 "text"
         );
@@ -168,9 +166,9 @@ class PostRepositoryImplTest {
         Long postId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM posts", Long.class);
 
         jdbcTemplate.update("""
-            INSERT INTO post_tags(post_id, tag)
-            VALUES (?, ?)
-            """,
+                        INSERT INTO post_tags(post_id, tag)
+                        VALUES (?, ?)
+                        """,
                 postId,
                 "java"
         );
@@ -206,9 +204,9 @@ class PostRepositoryImplTest {
     void updatePost_shouldUpdatePost() {
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """,
+                        INSERT INTO posts(title, text)
+                        VALUES (?, ?)
+                        """,
                 "old title",
                 "old text"
         );
@@ -239,9 +237,9 @@ class PostRepositoryImplTest {
     void deletePost_shouldDeletePost() {
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """,
+                        INSERT INTO posts(title, text)
+                        VALUES (?, ?)
+                        """,
                 "title",
                 "text"
         );
@@ -252,10 +250,10 @@ class PostRepositoryImplTest {
 
         Integer count = jdbcTemplate.queryForObject(
                 """
-                SELECT COUNT(*)
-                FROM posts
-                WHERE id = ?
-                """,
+                        SELECT COUNT(*)
+                        FROM posts
+                        WHERE id = ?
+                        """,
                 Integer.class,
                 postId
         );
@@ -267,9 +265,9 @@ class PostRepositoryImplTest {
     void save_shouldSavePost() {
 
         jdbcTemplate.update("""
-            INSERT INTO posts(title, text)
-            VALUES (?, ?)
-            """,
+                        INSERT INTO posts(title, text)
+                        VALUES (?, ?)
+                        """,
                 "title",
                 "text"
         );

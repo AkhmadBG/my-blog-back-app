@@ -44,4 +44,5 @@ public class DataSourceConfiguration {
         populator.addScript(new ClassPathResource("schema.sql"));
         populator.execute(dataSource);
     }
+
 }
