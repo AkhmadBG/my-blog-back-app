@@ -12,17 +12,16 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments",
+          "raw": "http://localhost:8080/api/posts/5/comments",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "my-blog-back-app-1.0-SNAPSHOT",
             "api",
             "posts",
-            "1",
+            "5",
             "comments"
           ]
         }
@@ -35,19 +34,18 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments/2",
+          "raw": "http://localhost:8080/api/posts/5/comments/7",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "my-blog-back-app-1.0-SNAPSHOT",
             "api",
             "posts",
-            "1",
+            "5",
             "comments",
-            "2"
+            "7"
           ]
         }
       },
@@ -68,14 +66,13 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/4/comments",
+          "raw": "http://localhost:8080/api/posts/4/comments",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "my-blog-back-app-1.0-SNAPSHOT",
             "api",
             "posts",
             "4",
@@ -92,7 +89,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"id\": 1,\r\n    \"text\": \"very very good\",\r\n    \"postId\": 1\r\n}",
+          "raw": "{\r\n    \"id\": 5,\r\n    \"text\": \"very very very very good post\",\r\n    \"postId\": 7\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -100,26 +97,25 @@
           }
         },
         "url": {
-          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments/2",
+          "raw": "http://localhost:8080/api/posts/5/comments/7",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "my-blog-back-app-1.0-SNAPSHOT",
             "api",
             "posts",
-            "1",
+            "5",
             "comments",
-            "2"
+            "7"
           ]
         }
       },
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "DeleteComment",
       "request": {
         "method": "DELETE",
         "header": [],
@@ -128,19 +124,18 @@
           "raw": "{\r\n    \"id\": 1,\r\n    \"text\": \"very good\",\r\n    \"postId\": 1\r\n}"
         },
         "url": {
-          "raw": "http://localhost:8080/my-blog-back-app-1.0-SNAPSHOT/api/posts/1/comments/1",
+          "raw": "http://localhost:8080/api/posts/5/comments/7",
           "protocol": "http",
           "host": [
             "localhost"
           ],
           "port": "8080",
           "path": [
-            "my-blog-back-app-1.0-SNAPSHOT",
             "api",
             "posts",
-            "1",
+            "5",
             "comments",
-            "1"
+            "7"
           ]
         }
       },

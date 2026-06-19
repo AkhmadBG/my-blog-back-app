@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS posts (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    text TEXT NOT NULL,
+    image_path VARCHAR(255),
+    likes_count BIGINT NOT NULL DEFAULT 0,
+    comments_count BIGINT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    text TEXT NOT NULL,
+    post_id BIGINT NOT NULL,
+    CONSTRAINT fk_posts_comments
+        FOREIGN KEY (post_id)
+        REFERENCES posts(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS post_tags (
+    post_id BIGINT NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    tag VARCHAR(20) NOT NULL,
+    PRIMARY KEY(post_id, tag)
+);

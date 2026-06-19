@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.yandex.practicum.config.CommentServiceTestConfig;
+import ru.yandex.practicum.configuration.CommentServiceTestConfiguration;
 import ru.yandex.practicum.dto.CommentResponse;
 import ru.yandex.practicum.dto.NewCommentRequest;
 import ru.yandex.practicum.dto.UpdateCommentRequest;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = CommentServiceTestConfig.class)
+@ContextConfiguration(classes = CommentServiceTestConfiguration.class)
 class CommentServiceImplTest {
 
     @Autowired
@@ -253,4 +253,5 @@ class CommentServiceImplTest {
                         false
                 );
     }
+
 }

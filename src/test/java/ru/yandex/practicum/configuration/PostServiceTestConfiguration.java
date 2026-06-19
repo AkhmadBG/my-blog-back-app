@@ -1,18 +1,20 @@
-package ru.yandex.practicum.config;
+package ru.yandex.practicum.configuration;
 
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import ru.yandex.practicum.mapper.PostMapper;
 import ru.yandex.practicum.repository.PostRepository;
 import ru.yandex.practicum.service.PostService;
 import ru.yandex.practicum.service.impl.PostServiceImpl;
 
 @Configuration
-public class PostServiceTestConfig {
+public class PostServiceTestConfiguration {
 
     @Bean
+    @Primary
     public PostRepository postRepository() {
         return Mockito.mock(PostRepository.class);
     }
@@ -27,5 +29,5 @@ public class PostServiceTestConfig {
                                    @Qualifier("postMapper") PostMapper mapper) {
         return new PostServiceImpl(repository, mapper);
     }
-    
+
 }

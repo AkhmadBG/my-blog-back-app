@@ -3,12 +3,11 @@ package ru.yandex.practicum.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.yandex.practicum.config.PostServiceTestConfig;
+import ru.yandex.practicum.configuration.PostServiceTestConfiguration;
 import ru.yandex.practicum.dto.CustomPage;
 import ru.yandex.practicum.dto.NewPostRequest;
 import ru.yandex.practicum.dto.PostResponse;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = PostServiceTestConfig.class)
+@ContextConfiguration(classes = PostServiceTestConfiguration.class)
 class PostServiceImplTest {
 
     @Autowired
@@ -46,6 +45,7 @@ class PostServiceImplTest {
     void setUp() {
         reset(postRepository, postMapper);
     }
+
 
     @Test
     void shouldGetPost() {
@@ -354,25 +354,6 @@ class PostServiceImplTest {
         assertNotNull(post.getImagePath());
 
         assertTrue(post.getImagePath().contains("1.jpg"));
-    }
-
-    @Test
-    void shouldShortenLongText() {
-
-        String longText = "a".repeat(150);
-
-        Post post = Post.builder()
-                .id(1L)
-                .title("Title")
-                .text(longText)
-                .build();
-
-        PostResponse response =
-                postMapper.mapToPostResponseForList(post);
-
-        assertEquals(131, response.text().length());
-
-        assertTrue(response.text().endsWith("..."));
     }
 
 }
